@@ -14,7 +14,7 @@
 /*Creates a window. Returns true if successful.*/
 bool XOverlay::createWindow(Display* display, int width, int height,
     Window* outWindow, cairo_surface_t** outSurface,
-    cairo_t** outContext){{{
+    cairo_t** outContext) /*{{{*/
 {
 
     Window rootWindow = DefaultRootWindow(display);

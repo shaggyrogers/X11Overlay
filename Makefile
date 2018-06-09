@@ -1,25 +1,24 @@
 all: lib clean
 
-test: maketest clean
+test: lib maketest clean
 
-lib: X11Overlay.o Drawing.o cswrapper.o
-	g++ -shared -o libxoverlay.so cswrapper.o Drawing.o X11Overlay.o -lX11 -lXfixes -lXcomposite -lcairo
+lib: build/X11Overlay.o build/Drawing.o build/libxoverlay.o
+	g++ -shared -o bin/libxoverlay.so build/libxoverlay.o build/Drawing.o build/X11Overlay.o -lX11 -lXfixes -lXcomposite -lcairo
 
-X11Overlay.o: X11Overlay.h
-	g++ -fPIC -c X11Overlay.cpp 
+build/X11Overlay.o: src/X11Overlay.h
+	g++ -fPIC -c src/X11Overlay.cpp -o build/X11Overlay.o
 
-Drawing.o: Drawing.h
-	g++ -fPIC -c Drawing.cpp
+build/Drawing.o: src/Drawing.h
+	g++ -fPIC -c src/Drawing.cpp -o build/Drawing.o
 
-cswrapper.o: cswrapper.h
-	g++ -fPIC -c cswrapper.cpp
+build/libxoverlay.o: src/libxoverlay.h
+	g++ -fPIC -c src/libxoverlay.cpp -o build/libxoverlay.o
+
+maketest: build/main.o
+	g++ build/Drawing.o build/X11Overlay.o build/main.o -o bin/main -lX11 -lXfixes -lXcomposite -lcairo
+
+build/main.o: build/X11Overlay.o
+	g++ -c src/main.cpp -o build/main.o
 
 clean:
-	rm X11Overlay.o Drawing.o cswrapper.o #main.o
-
-main.o: X11Overlay.o
-	g++ -c main.cpp 
-
-maketest: main.o lib
-	g++ Drawing.o X11Overlay.o main.o -o main -lX11 -lXfixes -lXcomposite -lcairo
-	rm main.o
+	rm build/*

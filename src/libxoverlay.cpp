@@ -1,15 +1,15 @@
 /*
-   XOverlay.cpp
-   ============
+   libxoverlay.cpp
+   ===============
 
-   Description:           Functions exported by libxoverlay.so.
+   Description:           Implements functions exported by libxoverlay.so.
    Author:                Michael De Pasquale <shaggyrogers>
    Creation Date:         2016-12-04
-   Modification Date:     2018-06-06
+   Modification Date:     2018-06-09
    License:               MIT
 */
 
-#include "cswrapper.h"
+#include "libxoverlay.h"
 
 extern "C" {
 
@@ -93,3 +93,5 @@ void cleanup()
 }
 
 } /* extern "C" */
+
+/* vim: set ts=4 sw=4 tw=79 fdm=marker et : */

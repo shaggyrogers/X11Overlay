@@ -1,11 +1,11 @@
 /*
-   cswrapper.h
-   ===========
+   libxoverlay.h
+   =============
 
    Description:           Functions exported by libxoverlay.so.
    Author:                Michael De Pasquale <shaggyrogers>
    Creation Date:         2016-12-04
-   Modification Date:     2018-06-06
+   Modification Date:     2018-06-09
    License:               MIT
 */
 
@@ -57,3 +57,5 @@ extern "C" int getHeight();
 extern "C" void cleanup();
 
 #endif /* __CSWRAPPER_H__ */
+
+/* vim: set ts=4 sw=4 tw=79 fdm=marker et : */

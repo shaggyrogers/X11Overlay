@@ -1,3 +1,7 @@
+# C++ project gitignore file
+# Source: https://github.com/github/gitignore/blob/master/C%2B%2B.gitignore
+# With some modifications.
+
 # Prerequisites
 *.d
 
@@ -16,10 +20,6 @@
 *.dylib
 *.dll
 
-# Fortran module files
-*.mod
-*.smod
-
 # Compiled Static libraries
 *.lai
 *.la
@@ -30,3 +30,25 @@
 *.exe
 *.out
 *.app
+
+# Tag files
+tags
+.tags
+!tags/
+tags.lock
+
+# Ignore bin / build / folder contents
+build/*
+bin/*
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Core dumps
+core.*
+
+# Log files
+*.log
+*log.txt

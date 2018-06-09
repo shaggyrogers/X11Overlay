@@ -99,8 +99,7 @@ Rectangle::Rectangle(float x1, float y1, float x2, float y2, float r, float g,
 
 void Rectangle::draw(cairo_t* context) /*{{{*/
 {
-    if (!filled)
-    {
+    if (!filled) {
         cairo_set_line_width(context, lineWidth);
     }
 
@@ -188,6 +187,5 @@ void Circle::draw(cairo_t* context) /*{{{*/
 
     cairo_fill(context);
 } /*}}}*/
-
 
 /* vim: set ts=4 sw=4 tw=79 fdm=marker et : */
