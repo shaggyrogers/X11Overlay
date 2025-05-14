@@ -2,8 +2,11 @@ all: lib clean
 
 test: lib maketest clean
 
-lib: build/X11Overlay.o build/Drawing.o build/libxoverlay.o
+lib: mk_dirs build/X11Overlay.o build/Drawing.o build/libxoverlay.o
 	g++ -shared -o bin/libxoverlay.so build/libxoverlay.o build/Drawing.o build/X11Overlay.o -lX11 -lXfixes -lXcomposite -lcairo
+
+mk_dirs:
+	mkdir -p build bin
 
 build/X11Overlay.o: src/X11Overlay.h
 	g++ -fPIC -c src/X11Overlay.cpp -o build/X11Overlay.o
@@ -21,4 +24,4 @@ build/main.o: build/X11Overlay.o
 	g++ -c src/main.cpp -o build/main.o
 
 clean:
-	rm build/*
+	rm -r build
