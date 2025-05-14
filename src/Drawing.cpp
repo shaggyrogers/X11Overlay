@@ -5,15 +5,15 @@
    Description:           Implements methods defined in Drawing.h
    Author:                Michael De Pasquale <shaggyrogers>
    Creation Date:         2016-12-04
-   Modification Date:     2018-06-06
+   Modification Date:     2025-05-14
    License:               MIT
 */
 
 #include "Drawing.h"
 
-/* Text */
+// Text
 Text::Text(char* string, float x, float y, float size, float r, float g,
-    float b, float a, bool centered) /*{{{*/
+    float b, float a, bool centered)
 {
     /* Copy string */
     int len = strlen(string);
@@ -34,9 +34,9 @@ Text::Text(char* string, float x, float y, float size, float r, float g,
     this->b = b;
     this->a = a;
     this->centered = centered;
-} /*}}}*/
+}
 
-void Text::draw(cairo_t* context) /*{{{*/
+void Text::draw(cairo_t* context)
 {
     cairo_text_extents_t te;
 
@@ -55,11 +55,11 @@ void Text::draw(cairo_t* context) /*{{{*/
     }
 
     cairo_show_text(context, string);
-} /*}}}*/
+}
 
-/* Line */
+// Line
 Line::Line(float x1, float y1, float x2, float y2, float r, float g,
-    float b, float a, float lineWidth) /*{{{*/
+    float b, float a, float lineWidth)
 {
     this->x1 = x1;
     this->y1 = y1;
@@ -70,7 +70,7 @@ Line::Line(float x1, float y1, float x2, float y2, float r, float g,
     this->g = g;
     this->b = b;
     this->a = a;
-} /*}}}*/
+}
 
 void Line::draw(cairo_t* context) /*{{{*/
 {
@@ -81,9 +81,9 @@ void Line::draw(cairo_t* context) /*{{{*/
     cairo_stroke(context);
 } /*}}}*/
 
-/* Rectangle */
+// Rectangle
 Rectangle::Rectangle(float x1, float y1, float x2, float y2, float r, float g,
-    float b, float a, bool filled, float lineWidth) /*{{{*/
+    float b, float a, bool filled, float lineWidth)
 {
     this->x1 = x1;
     this->y1 = y1;
@@ -95,9 +95,9 @@ Rectangle::Rectangle(float x1, float y1, float x2, float y2, float r, float g,
     this->a = a;
     this->filled = filled;
     this->lineWidth = lineWidth;
-} /*}}}*/
+}
 
-void Rectangle::draw(cairo_t* context) /*{{{*/
+void Rectangle::draw(cairo_t* context)
 {
     if (!filled) {
         cairo_set_line_width(context, lineWidth);
@@ -116,11 +116,11 @@ void Rectangle::draw(cairo_t* context) /*{{{*/
     }
 
     cairo_fill(context);
-} /*}}}*/
+}
 
-/* Triangle */
+// Triangle
 Triangle::Triangle(float x1, float y1, float x2, float y2, float x3, float y3,
-    float r, float g, float b, float a, bool filled, float lineWidth) /*{{{*/
+    float r, float g, float b, float a, bool filled, float lineWidth)
 {
     this->x1 = x1;
     this->y1 = y1;
@@ -134,9 +134,9 @@ Triangle::Triangle(float x1, float y1, float x2, float y2, float x3, float y3,
     this->a = a;
     this->filled = filled;
     this->lineWidth = lineWidth;
-} /*}}}*/
+}
 
-void Triangle::draw(cairo_t* context) /*{{{*/
+void Triangle::draw(cairo_t* context)
 {
     if (!filled)
         cairo_set_line_width(context, lineWidth);
@@ -153,11 +153,11 @@ void Triangle::draw(cairo_t* context) /*{{{*/
     }
 
     cairo_fill(context);
-} /*}}}*/
+}
 
-/* Circle */
+// Circle
 Circle::Circle(float x, float y, float radius, float r, float g, float b,
-    float a, bool filled, float lineWidth) /*{{{*/
+    float a, bool filled, float lineWidth)
 {
     this->x = x;
     this->y = y;
@@ -168,9 +168,9 @@ Circle::Circle(float x, float y, float radius, float r, float g, float b,
     this->a = a;
     this->filled = filled;
     this->lineWidth = lineWidth;
-} /*}}}*/
+}
 
-void Circle::draw(cairo_t* context) /*{{{*/
+void Circle::draw(cairo_t* context)
 {
     if (!filled) {
         cairo_set_line_width(context, lineWidth);
@@ -186,6 +186,4 @@ void Circle::draw(cairo_t* context) /*{{{*/
     }
 
     cairo_fill(context);
-} /*}}}*/
-
-/* vim: set ts=4 sw=4 tw=79 fdm=marker et : */
+}

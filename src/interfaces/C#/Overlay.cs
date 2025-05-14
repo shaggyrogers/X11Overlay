@@ -5,7 +5,7 @@
    Description:           Wrapper class - C# interface for libxoverlay
    Author:                Michael De Pasquale <shaggyrogers>
    Creation Date:         2016-12-04
-   Modification Date:     2018-06-06
+   Modification Date:     2025-05-14
    License:               MIT
  */
 
@@ -14,7 +14,7 @@ using System.Collections.Generic;
 using System.Runtime.InteropServices;
 
 namespace rustesp {
-    public static class Overlay {  /*{{{*/
+    public static class Overlay {
         
         [DllImport("libxoverlay.so", EntryPoint="init")]
         public static extern void init();
@@ -63,7 +63,5 @@ namespace rustesp {
               
         [DllImport("libxoverlay.so", EntryPoint="cleanup")]
         public static extern void cleanup();
-    }  /*}}}*/
+    }
 }
-
-/* vim: set ts=4 sw=4 tw=79 fdm=marker et : */

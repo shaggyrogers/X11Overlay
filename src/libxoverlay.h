@@ -5,7 +5,7 @@
    Description:           Functions exported by libxoverlay.so.
    Author:                Michael De Pasquale <shaggyrogers>
    Creation Date:         2016-12-04
-   Modification Date:     2018-06-09
+   Modification Date:     2025-05-14
    License:               MIT
 */
 
@@ -16,19 +16,19 @@
 
 extern XOverlay* overlay;
 
-/* Initialise */
+// Initialise
 extern "C" void init();
 
-/* Clears the list of things to draw */
+// Clears the list of things to draw
 extern "C" void clear();
 
-/* Maps all drawing to an area with the given size and offset. */
+// Maps all drawing to an area with the given size and offset.
 extern "C" void setWindowMap(float x, float y, float width, float height);
 
-/* Clears the current window map */
+// Clears the current window map
 extern "C" void clearWindowMap();
 
-/* Add items to draw */
+// Add items to draw
 extern "C" void addText(char* string, float x, float y, float size, float r,
     float g, float b, float a, bool centered);
 
@@ -45,17 +45,15 @@ extern "C" void addTriangle(float x1, float y1, float x2, float y2, float x3,
 extern "C" void addCircle(float x, float y, float radius, float r, float g,
     float b, float a, bool filled, float lineWidth);
 
-/* Draw everything */
+// Draw everything
 extern "C" void draw();
 
-/* Get width, height */
+// Get width, height
 extern "C" int getWidth();
 
 extern "C" int getHeight();
 
-/* Call when exiting */
+// Call when exiting
 extern "C" void cleanup();
 
-#endif /* __CSWRAPPER_H__ */
-
-/* vim: set ts=4 sw=4 tw=79 fdm=marker et : */
+#endif // __CSWRAPPER_H__

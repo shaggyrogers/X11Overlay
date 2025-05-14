@@ -5,7 +5,7 @@
    Description:           Implements functions exported by libxoverlay.so.
    Author:                Michael De Pasquale <shaggyrogers>
    Creation Date:         2016-12-04
-   Modification Date:     2018-06-09
+   Modification Date:     2025-05-14
    License:               MIT
 */
 
@@ -13,31 +13,31 @@
 
 extern "C" {
 
-/* Initialise */
+// Initialise
 void init()
 {
     overlay = new XOverlay();
 }
 
-/* Clears the list of things to draw */
+// Clears the list of things to draw
 void clear()
 {
     overlay->clear();
 }
 
-/* Maps all drawing to an area with the given size and offset. */
+// Maps all drawing to an area with the given size and offset.
 void setWindowMap(float x, float y, float width, float height)
 {
     overlay->setWindowMap(x, y, width, height);
 }
 
-/* Clears the current window map */
+// Clears the current window map
 void clearWindowMap()
 {
     overlay->clearWindowMap();
 }
 
-/* Add items to draw */
+// Add items to draw
 void addText(char* string, float x, float y, float size, float r, float g,
     float b, float a, bool centered)
 {
@@ -69,13 +69,13 @@ void addCircle(float x, float y, float radius, float r, float g, float b,
     overlay->addCircle(x, y, radius, r, g, b, a, filled, lineWidth);
 }
 
-/* Draw everything */
+// Draw everything
 void draw()
 {
     overlay->draw();
 }
 
-/* Get width, height */
+// Get width, height
 int getWidth()
 {
     return overlay->getWidth();
@@ -86,12 +86,10 @@ int getHeight()
     return overlay->getHeight();
 }
 
-/* Call when exiting */
+// Call when exiting
 void cleanup()
 {
     overlay->cleanup();
 }
 
-} /* extern "C" */
-
-/* vim: set ts=4 sw=4 tw=79 fdm=marker et : */
+} // extern "C"
