@@ -42,9 +42,9 @@ The main issues are:
 
 ## TODO
 
-* Clean up and refactor
+* Use tuples, keyword arguments for python interface
 * Add unit & integration tests
-* Add C# and Python examples
+* Add C# example
 * Allow drawing over fullscreen applications
 * Ignore window manager, no title bar etc.
 * Fix flickering issue
