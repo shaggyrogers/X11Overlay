@@ -26,8 +26,9 @@ build/main.o: build/X11Overlay.o
 	g++ -c src/main.cpp -o build/main.o
 
 # Python interface
-python: lib clean
-	g++ src/interfaces/python/overlay.cpp -std=c++17 -shared -fPIC -o bin/overlay.so `pkg-config --cflags --libs python3 cairo xfixes xcomposite`
+python: lib
+	g++ -c src/interfaces/python/overlay.cpp -std=c++17 -fPIC -o build/overlay.o `pkg-config --cflags --libs python3 cairo xfixes xcomposite`
+	g++ build/Drawing.o build/X11Overlay.o build/overlay.o -shared -o bin/overlay.so `pkg-config --cflags --libs python3 cairo xfixes xcomposite`
 
 clean:
 	rm -r build

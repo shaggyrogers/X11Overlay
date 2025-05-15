@@ -5,44 +5,53 @@
   Description:           Python interface.
   Author:                Michael De Pasquale
   Creation Date:         2025-05-14
-  Modification Date:     2025-05-14
+  Modification Date:     2025-05-15
 
 */
 
 #define PY_SSIZE_T_CLEAN
 #define MODULE_NAME "overlay"
 
-// HACK:
-#include "../../libxoverlay.h"
+#include "../../X11Overlay.h"
 #include <Python.h>
 #include <iostream>
 
+XOverlay* overlay = NULL;
+
 static PyObject* overlay_init(PyObject* self, PyObject* args)
 {
-    // NOTE: Expecting this to fail if arguments are provided.. test this!
     if (!PyArg_ParseTuple(args, "")) {
         PyErr_SetString(PyExc_TypeError, "Unexpected arguments");
-    } else {
-        init();
+
+        return NULL;
     }
 
-    return NULL;
+    if (overlay) {
+        PyErr_SetString(PyExc_RuntimeError, "init() called twice!");
+
+        return NULL;
+    }
+
+    overlay = new XOverlay();
+
+    return Py_BuildValue("");
 }
 
 static PyObject* overlay_clear(PyObject* self, PyObject* args)
 {
     if (!PyArg_ParseTuple(args, "")) {
         PyErr_SetString(PyExc_TypeError, "Unexpected arguments");
-    } else {
-        clear();
+
+        return NULL;
     }
 
-    return NULL;
+    overlay->clear();
+
+    return Py_BuildValue("");
 }
 
 static PyObject* overlay_setWindowMap(PyObject* self, PyObject* args)
 {
-    // float x, float y, float width, float height
     float x, y, width, height;
 
     if (!PyArg_ParseTuple(args, "ffff", &x, &y, &width, &height)) {
@@ -51,20 +60,22 @@ static PyObject* overlay_setWindowMap(PyObject* self, PyObject* args)
         return NULL;
     }
 
-    setWindowMap(x, y, width, height);
+    overlay->setWindowMap(x, y, width, height);
 
-    return NULL;
+    return Py_BuildValue("");
 }
 
 static PyObject* overlay_clearWindowMap(PyObject* self, PyObject* args)
 {
     if (!PyArg_ParseTuple(args, "")) {
         PyErr_SetString(PyExc_TypeError, "Unexpected arguments");
-    } else {
-        clearWindowMap();
+
+        return NULL;
     }
 
-    return NULL;
+    overlay->clearWindowMap();
+
+    return Py_BuildValue("");
 }
 
 static PyObject* overlay_addText(PyObject* self, PyObject* args)
@@ -73,15 +84,15 @@ static PyObject* overlay_addText(PyObject* self, PyObject* args)
     float x, y, size, r, g, b, a;
     int isCentered;
 
-    if (!PyArg_ParseTuple(args, "sffffffp", &text, &x, &y, &size, &r, &g, &b, &a, &isCentered)) {
+    if (!PyArg_ParseTuple(args, "sfffffffp", &text, &x, &y, &size, &r, &g, &b, &a, &isCentered)) {
         PyErr_SetString(PyExc_TypeError, "Failed to parse arguments");
 
         return NULL;
     }
 
-    addText((char*)text, x, y, size, r, g, b, a, (bool)isCentered);
+    overlay->addText((char*)text, x, y, size, r, g, b, a, (bool)isCentered);
 
-    return NULL;
+    return Py_BuildValue("");
 }
 
 static PyObject* overlay_addLine(PyObject* self, PyObject* args)
@@ -94,9 +105,9 @@ static PyObject* overlay_addLine(PyObject* self, PyObject* args)
         return NULL;
     }
 
-    addLine(x1, y1, x2, y2, r, g, b, a, lineWidth);
+    overlay->addLine(x1, y1, x2, y2, r, g, b, a, lineWidth);
 
-    return NULL;
+    return Py_BuildValue("");
 }
 
 static PyObject* overlay_addRectangle(PyObject* self, PyObject* args)
@@ -110,9 +121,9 @@ static PyObject* overlay_addRectangle(PyObject* self, PyObject* args)
         return NULL;
     }
 
-    addRectangle(x1, y1, x2, y2, r, g, b, a, (bool)isFilled, lineWidth);
+    overlay->addRectangle(x1, y1, x2, y2, r, g, b, a, (bool)isFilled, lineWidth);
 
-    return NULL;
+    return Py_BuildValue("");
 }
 
 static PyObject* overlay_addTriangle(PyObject* self, PyObject* args)
@@ -120,15 +131,15 @@ static PyObject* overlay_addTriangle(PyObject* self, PyObject* args)
     float x1, y1, x2, y2, x3, y3, r, g, b, a, lineWidth;
     int isFilled;
 
-    if (!PyArg_ParseTuple(args, "ffffffffffffpf", &x1, &y1, &x2, &y2, &x3, &y3, &r, &g, &b, &a, &isFilled, &lineWidth)) {
+    if (!PyArg_ParseTuple(args, "ffffffffffpf", &x1, &y1, &x2, &y2, &x3, &y3, &r, &g, &b, &a, &isFilled, &lineWidth)) {
         PyErr_SetString(PyExc_TypeError, "Failed to parse arguments");
 
         return NULL;
     }
 
-    addTriangle(x1, y1, x2, y2, x3, y3, r, g, b, a, (bool)isFilled, lineWidth);
+    overlay->addTriangle(x1, y1, x2, y2, x3, y3, r, g, b, a, (bool)isFilled, lineWidth);
 
-    return NULL;
+    return Py_BuildValue("");
 }
 
 static PyObject* overlay_addCircle(PyObject* self, PyObject* args)
@@ -142,20 +153,22 @@ static PyObject* overlay_addCircle(PyObject* self, PyObject* args)
         return NULL;
     }
 
-    addCircle(x, y, radius, r, g, b, a, (bool)isFilled, lineWidth);
+    overlay->addCircle(x, y, radius, r, g, b, a, (bool)isFilled, lineWidth);
 
-    return NULL;
+    return Py_BuildValue("");
 }
 
 static PyObject* overlay_draw(PyObject* self, PyObject* args)
 {
     if (!PyArg_ParseTuple(args, "")) {
         PyErr_SetString(PyExc_TypeError, "Unexpected arguments");
-    } else {
-        draw();
+
+        return NULL;
     }
 
-    return NULL;
+    overlay->draw();
+
+    return Py_BuildValue("");
 }
 
 static PyObject* overlay_getWidth(PyObject* self, PyObject* args)
@@ -166,7 +179,7 @@ static PyObject* overlay_getWidth(PyObject* self, PyObject* args)
         return NULL;
     }
 
-    return PyLong_FromLong(getWidth());
+    return PyLong_FromLong(overlay->getWidth());
 }
 
 static PyObject* overlay_getHeight(PyObject* self, PyObject* args)
@@ -177,18 +190,22 @@ static PyObject* overlay_getHeight(PyObject* self, PyObject* args)
         return NULL;
     }
 
-    return PyLong_FromLong(getHeight());
+    return PyLong_FromLong(overlay->getHeight());
 }
 
 static PyObject* overlay_cleanup(PyObject* self, PyObject* args)
 {
     if (!PyArg_ParseTuple(args, "")) {
         PyErr_SetString(PyExc_TypeError, "Unexpected arguments");
+
+        return NULL;
     } else {
-        cleanup();
+        overlay->cleanup();
+        delete overlay;
+        overlay = NULL;
     }
 
-    return NULL;
+    return Py_BuildValue("");
 }
 
 static PyMethodDef overlayMethods[] = {
