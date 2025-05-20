@@ -3,7 +3,7 @@ all: lib clean
 test: lib maketest clean
 
 # Library
-lib: mk_dirs build/X11Overlay.o build/Drawing.o build/libxoverlay.o
+lib: clean mk_dirs build/X11Overlay.o build/Drawing.o build/libxoverlay.o
 	g++ -shared -o bin/libxoverlay.so build/libxoverlay.o build/Drawing.o build/X11Overlay.o -lX11 -lXfixes -lXcomposite -lcairo
 
 mk_dirs:
@@ -26,9 +26,10 @@ build/main.o: build/X11Overlay.o
 	g++ -c src/main.cpp -o build/main.o
 
 # Python interface
-python: lib
+python: clean mk_dirs lib
 	g++ -c src/interfaces/python/overlay.cpp -std=c++17 -fPIC -o build/overlay.o `pkg-config --cflags --libs python3 cairo xfixes xcomposite`
 	g++ build/Drawing.o build/X11Overlay.o build/overlay.o -shared -o bin/overlay.so `pkg-config --cflags --libs python3 cairo xfixes xcomposite`
+	cp bin/overlay.so overlay.so
 
 clean:
-	rm -r build
+	rm -rf build
