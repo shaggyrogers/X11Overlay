@@ -5,7 +5,7 @@
    Description:           Implements functions exported by libxoverlay.so.
    Author:                Michael De Pasquale <shaggyrogers>
    Creation Date:         2016-12-04
-   Modification Date:     2025-05-14
+   Modification Date:     2025-05-20
    License:               MIT
 */
 
@@ -25,16 +25,21 @@ void clear()
     overlay->clear();
 }
 
-// Maps all drawing to an area with the given size and offset.
-void setWindowMap(float x, float y, float width, float height)
+bool setTargetWindow(unsigned int id, int& width, int& height)
 {
-    overlay->setWindowMap(x, y, width, height);
+    return overlay->setTargetWindow(id, width, height);
+}
+
+// Maps all drawing to an area with the given size and offset.
+void setWindowOffset(int x, int y)
+{
+    overlay->setWindowOffset(x, y);
 }
 
 // Clears the current window map
-void clearWindowMap()
+void clearWindowOffset()
 {
-    overlay->clearWindowMap();
+    overlay->clearWindowOffset();
 }
 
 // Add items to draw

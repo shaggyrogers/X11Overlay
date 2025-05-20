@@ -22,12 +22,14 @@ namespace rustesp {
         [DllImport("libxoverlay.so", EntryPoint="clear")]
         public static extern void clear();
 
-        [DllImport("libxoverlay.so", EntryPoint="setWindowMap")]
-        public static extern void setWindowMap(float x, float y, float width, 
-                float height);
+        [DllImport("libxoverlay.so", EntryPoint="setTargetWindow")]
+        public static extern bool setTargetWindow(unsigned int id, int& width, int& height);
 
-        [DllImport("libxoverlay.so", EntryPoint="clearWindowMap")]
-        public static extern void clearWindowMap();
+        [DllImport("libxoverlay.so", EntryPoint="setWindowOffset")]
+        public static extern void setWindowOffset(int x, int y);
+
+        [DllImport("libxoverlay.so", EntryPoint="clearWindowOffset")]
+        public static extern void clearWindowOffset();
 
         [DllImport("libxoverlay.so", EntryPoint="addText")]
         public static extern void addText(String str, float x, float y, 

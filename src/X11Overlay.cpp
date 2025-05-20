@@ -5,7 +5,7 @@
    Description:           Functions exported by libxoverlay.so.
    Author:                Michael De Pasquale <shaggyrogers>
    Creation Date:         2016-12-04
-   Modification Date:     2025-05-14
+   Modification Date:     2025-05-20
    License:               MIT
 */
 
@@ -24,6 +24,7 @@ bool XOverlay::createWindow(Display* display, int width, int height,
 
     if (!XMatchVisualInfo(display, screen, 32, TrueColor, &info)) {
         printf("Error: XMatchVisualInfo failed!\n");
+
         return false;
     }
 
@@ -46,11 +47,19 @@ bool XOverlay::createWindow(Display* display, int width, int height,
     // create cairo drawing context
     cairo_t* context = cairo_create(surface);
 
-    // Set window to be always on top
-    Atom fsatoms[2] = { XInternAtom(display, "_NET_WM_STATE_ABOVE", False),
-        None };
-    XChangeProperty(display, window, XInternAtom(display, "_NET_WM_STATE", False),
-        XA_ATOM, 32, PropModeReplace, (unsigned char*)fsatoms, 1);
+    // Set window type to "Dock"
+    Atom winType = XInternAtom(display, "_NET_WM_WINDOW_TYPE_DOCK", false);
+    XChangeProperty(display, window, XInternAtom(display, "_NET_WM_WINDOW_TYPE", false),
+        XA_ATOM, 32, PropModeReplace, (unsigned char*)&winType, 1);
+
+    // See https://specifications.freedesktop.org/wm-spec/1.3/ar01s05.html
+    Atom fsatoms[] = {
+        XInternAtom(display, "_NET_WM_STATE_ABOVE", false),
+        // XInternAtom(display, "_NET_WM_STATE_FULLSCREEN", false),
+        XInternAtom(display, "_NET_WM_STATE_SKIP_TASKBAR", false),
+    };
+    XChangeProperty(display, window, XInternAtom(display, "_NET_WM_STATE", false),
+        XA_ATOM, 32, PropModeReplace, (unsigned char*)fsatoms, sizeof(fsatoms) / sizeof(Atom));
 
     // Set the window to have an empty input shape
     XserverRegion region = XFixesCreateRegion(display, 0, 0);
@@ -61,6 +70,7 @@ bool XOverlay::createWindow(Display* display, int width, int height,
     // Display window
     if (!XMapWindow(display, window)) {
         printf("Error: XMapWindow failed!\n");
+
         return false;
     }
 
@@ -73,14 +83,10 @@ bool XOverlay::createWindow(Display* display, int width, int height,
 // Takes a screen point and maps it to the window.
 void XOverlay::mapToWindow(float& x, float& y)
 {
-    if (!mapActive)
-        return;
-
-    float screenPercentX = x / (float)width;
-    float screenPercentY = y / (float)height;
-
-    x = mapWidth * screenPercentX + mapX;
-    y = mapHeight * screenPercentY + mapY;
+    if (this->offsetActive) {
+        x += (float)this->offsetX;
+        y += (float)this->offsetY;
+    }
 }
 
 // Initialise
@@ -88,7 +94,7 @@ XOverlay::XOverlay()
 {
 
     // Get Display, default screen number, default root window
-    if (!(display = XOpenDisplay((char*)0))) {
+    if (!(display = XOpenDisplay(NULL))) {
         printf("Error: XOpenDisplay failed!\n");
         return;
     }
@@ -124,26 +130,61 @@ XOverlay::XOverlay()
 void XOverlay::clear()
 {
 
-    for (IDrawable* drawable : drawList)
+    for (IDrawable* drawable : drawList) {
         delete drawable;
+    }
 
     drawList.clear();
 }
 
-// Maps all drawing to an area with the given size and offset.
-void XOverlay::setWindowMap(float x, float y, float width, float height)
+bool XOverlay::setTargetWindow(unsigned int id, int& width, int& height)
 {
-    this->mapActive = true;
-    this->mapX = x;
-    this->mapY = y;
-    this->mapWidth = width;
-    this->mapHeight = height;
+    // Get window size
+    XWindowAttributes attrs;
+    Status status = XGetWindowAttributes(this->display, (Window)id, &attrs);
+
+    if (status == BadWindow || status == BadDrawable) {
+        std::cerr << "Failed to get attributes for window: " << id << "status=" << status << std::endl;
+
+        return false;
+    }
+
+    // Get absolute window position
+    int xAbs = 0, yAbs = 0;
+    Window child;
+    XTranslateCoordinates(
+        display,
+        id,
+        DefaultRootWindow(display),
+        0,
+        0,
+        &xAbs,
+        &yAbs,
+        &child);
+
+    std::cerr
+        << "Mapping to window " << id << ", abs: (" << xAbs << ", " << yAbs << ") size:"
+        << attrs.width << "x" << attrs.height << std::endl;
+
+    width = attrs.width;
+    height = attrs.height;
+    this->setWindowOffset(xAbs, yAbs);
+
+    return true;
+}
+
+// Maps all drawing to an area with the given size and offset.
+void XOverlay::setWindowOffset(int x, int y)
+{
+    this->offsetActive = true;
+    this->offsetX = x;
+    this->offsetY = y;
 }
 
 // Clears the current window map
-void XOverlay::clearWindowMap()
+void XOverlay::clearWindowOffset()
 {
-    this->mapActive = false;
+    this->offsetActive = false;
 }
 
 // Add items to draw
@@ -151,8 +192,7 @@ void XOverlay::addText(char* string, float x, float y, float size, float r, floa
     float b, float a, bool centered)
 {
     mapToWindow(x, y);
-    Text* text = new Text(string, x, y, size, r, g, b, a, centered);
-    drawList.push_back(text);
+    drawList.push_back(new Text(string, x, y, size, r, g, b, a, centered));
 }
 
 void XOverlay::addLine(float x1, float y1, float x2, float y2, float lineWidth, float r,
@@ -194,15 +234,17 @@ void XOverlay::addCircle(float x, float y, float radius, float r, float g, float
 void XOverlay::draw()
 {
 
-    if (drawList.size() == 0)
+    if (drawList.size() == 0) {
         return;
+    }
 
     // Redirect all drawing to a group
     cairo_push_group(context[num]);
 
     // draw everything to group
-    for (IDrawable* drawable : drawList)
+    for (IDrawable* drawable : drawList) {
         drawable->draw(context[num]);
+    }
 
     // Draw from group to window
     cairo_pop_group_to_source(context[num]);
@@ -224,6 +266,7 @@ void XOverlay::draw()
 }
 
 // Call when exiting
+// TODO: Move to destructor
 void XOverlay::cleanup()
 {
     initialised = false;

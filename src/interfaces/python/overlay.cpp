@@ -5,7 +5,7 @@
   Description:           Python interface.
   Author:                Michael De Pasquale
   Creation Date:         2025-05-14
-  Modification Date:     2025-05-15
+  Modification Date:     2025-05-20
 
 */
 
@@ -50,22 +50,43 @@ static PyObject* overlay_clear(PyObject* self, PyObject* args)
     return Py_BuildValue("");
 }
 
-static PyObject* overlay_setWindowMap(PyObject* self, PyObject* args)
+static PyObject* overlay_setTargetWindow(PyObject* self, PyObject* args)
 {
-    float x, y, width, height;
+    unsigned int id;
 
-    if (!PyArg_ParseTuple(args, "ffff", &x, &y, &width, &height)) {
+    if (!PyArg_ParseTuple(args, "I", &id)) {
         PyErr_SetString(PyExc_TypeError, "Failed to parse arguments");
 
         return NULL;
     }
 
-    overlay->setWindowMap(x, y, width, height);
+    int width = 0, height = 0;
+
+    if (!overlay->setTargetWindow(id, width, height)) {
+        PyErr_SetString(PyExc_RuntimeError, "Failed to set target window!");
+
+        return NULL;
+    }
+
+    return PyTuple_Pack(2, PyLong_FromLong(width), PyLong_FromLong(height));
+}
+
+static PyObject* overlay_setWindowOffset(PyObject* self, PyObject* args)
+{
+    int x, y;
+
+    if (!PyArg_ParseTuple(args, "ii", &x, &y)) {
+        PyErr_SetString(PyExc_TypeError, "Failed to parse arguments");
+
+        return NULL;
+    }
+
+    overlay->setWindowOffset(x, y);
 
     return Py_BuildValue("");
 }
 
-static PyObject* overlay_clearWindowMap(PyObject* self, PyObject* args)
+static PyObject* overlay_clearWindowOffset(PyObject* self, PyObject* args)
 {
     if (!PyArg_ParseTuple(args, "")) {
         PyErr_SetString(PyExc_TypeError, "Unexpected arguments");
@@ -73,7 +94,7 @@ static PyObject* overlay_clearWindowMap(PyObject* self, PyObject* args)
         return NULL;
     }
 
-    overlay->clearWindowMap();
+    overlay->clearWindowOffset();
 
     return Py_BuildValue("");
 }
@@ -211,8 +232,9 @@ static PyObject* overlay_cleanup(PyObject* self, PyObject* args)
 static PyMethodDef overlayMethods[] = {
     { "init", overlay_init, METH_VARARGS, "Initialise" },
     { "clear", overlay_clear, METH_VARARGS, "Clear screen" },
-    { "setWindowMap", overlay_setWindowMap, METH_VARARGS, "Map all drawing to a rectangle" },
-    { "clearWindowMap", overlay_clearWindowMap, METH_VARARGS, "Clear current window map." },
+    { "setTargetWindow", overlay_setTargetWindow, METH_VARARGS, "Set the target window (by ID)" },
+    { "setWindowOffset", overlay_setWindowOffset, METH_VARARGS, "Set offset for drawing. Prefer setTargetWindow()." },
+    { "clearWindowOffset", overlay_clearWindowOffset, METH_VARARGS, "Clear current window offset." },
     { "addText", overlay_addText, METH_VARARGS, "Add text" },
     { "addLine", overlay_addLine, METH_VARARGS, "Add a line" },
     { "addRectangle", overlay_addRectangle, METH_VARARGS, "Add a rectangle" },

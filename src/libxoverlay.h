@@ -5,7 +5,7 @@
    Description:           Functions exported by libxoverlay.so.
    Author:                Michael De Pasquale <shaggyrogers>
    Creation Date:         2016-12-04
-   Modification Date:     2025-05-14
+   Modification Date:     2025-05-20
    License:               MIT
 */
 
@@ -16,19 +16,16 @@
 
 extern XOverlay* overlay;
 
-// Initialise
 extern "C" void init();
 
-// Clears the list of things to draw
 extern "C" void clear();
 
-// Maps all drawing to an area with the given size and offset.
-extern "C" void setWindowMap(float x, float y, float width, float height);
+extern "C" bool setTargetWindow(unsigned int id, int& width, int& height);
 
-// Clears the current window map
-extern "C" void clearWindowMap();
+extern "C" void setWindowOffset(int x, int y);
 
-// Add items to draw
+extern "C" void clearWindowOffset();
+
 extern "C" void addText(char* string, float x, float y, float size, float r,
     float g, float b, float a, bool centered);
 
@@ -45,15 +42,12 @@ extern "C" void addTriangle(float x1, float y1, float x2, float y2, float x3,
 extern "C" void addCircle(float x, float y, float radius, float r, float g,
     float b, float a, bool filled, float lineWidth);
 
-// Draw everything
 extern "C" void draw();
 
-// Get width, height
 extern "C" int getWidth();
 
 extern "C" int getHeight();
 
-// Call when exiting
 extern "C" void cleanup();
 
 #endif // __CSWRAPPER_H__

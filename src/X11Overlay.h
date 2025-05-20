@@ -5,7 +5,7 @@
   Description:           TODO
   Author:                Michael De Pasquale
   Creation Date:         2016-12-04
-  Modification Date:     2025-05-14
+  Modification Date:     2025-05-20
 
 */
 
@@ -14,6 +14,7 @@
 
 #include "Drawing.h"
 
+#include <iostream>
 #include <list>
 #include <stdio.h>
 #include <time.h>
@@ -46,10 +47,10 @@ private:
     cairo_surface_t* surface[2];
     cairo_t* context[2];
 
-    // Window map
-    bool mapActive = false;
-    float mapX, mapY;
-    float mapWidth, mapHeight;
+    // Target window offset
+    bool offsetActive = false;
+    int offsetX = 0;
+    int offsetY = 0;
 
     // Creates a window. Returns true if successful.
     bool createWindow(Display* display, int width, int height, Window* outWindow, cairo_surface_t** outSurface,
@@ -59,17 +60,23 @@ private:
     void mapToWindow(float& x, float& y);
 
 public:
-    // Iniitalise
+    // Initialise
     XOverlay();
 
     // Clears the list of things to draw.
     void clear();
 
-    // Maps all drawing to an area with the given size and offset.
-    void setWindowMap(float x, float y, float width, float height);
+    // Specify a window to draw over.
+    // Returns true if sucessful, updating width and height with the
+    // width and height of the target window. Returns false if unsuccessful.
+    bool setTargetWindow(unsigned int id, int& width, int& height);
 
-    // Clears the current window map
-    void clearWindowMap();
+    // Maps all drawing to an area with the given size and offset.
+    // Prefer setTargetWindow(), which calls this
+    void setWindowOffset(int x, int y);
+
+    // Clears the current window offset.
+    void clearWindowOffset();
 
     // Add items to draw
     void addText(char* string, float x, float y, float size, float r, float g, float b,
@@ -87,7 +94,7 @@ public:
     // Draws everything; call this every loop
     void draw();
 
-    // Get overlay width and height
+    // Get overlay window width and height
     int getWidth() { return width; }
     int getHeight() { return height; }
 
