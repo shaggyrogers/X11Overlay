@@ -2,7 +2,7 @@
 
 This is a very basic library for drawing text and simple shapes over other windows using a transparent overlay window.
 It supports Linux distributions using X11 only.
-This has been tested on Ubuntu 24.04 (use a "Ubuntu on Xorg" session)
+This has been tested on Ubuntu 24.04 with Gnome/Mutter (use a "Ubuntu on Xorg" session)
 
 I originally used this as part of cheat software for the game Rust. See my post [here](https://www.unknowncheats.me/forum/general-programming-and-reversing/202747-external-w2s-guide.html) for information on implementing 3D projection in software. This is now part of my [external aimbot project](https://github.com/shaggyrogers/external-aimbot).
 
@@ -33,6 +33,7 @@ See python example script
 
 ## Issues
 
+* Does not update target window position
 * Overlay window might flicker
 * Misc. minor bugs
   - Colors are incorrectly reset by overlapping elements
