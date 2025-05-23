@@ -5,7 +5,7 @@
    Description:           Functions exported by libxoverlay.so.
    Author:                Michael De Pasquale <shaggyrogers>
    Creation Date:         2016-12-04
-   Modification Date:     2025-05-20
+   Modification Date:     2025-05-23
    License:               MIT
 */
 
@@ -233,11 +233,6 @@ void XOverlay::addCircle(float x, float y, float radius, float r, float g, float
 // Draws everything
 void XOverlay::draw()
 {
-
-    if (drawList.size() == 0) {
-        return;
-    }
-
     // Redirect all drawing to a group
     cairo_push_group(context[num]);
 

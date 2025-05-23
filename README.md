@@ -38,7 +38,6 @@ See python example script
 * Misc. minor bugs
   - Colors are incorrectly reset by overlapping elements
   - Unfilled circles are incorrectly drawn with a radial line
-  - Does not seem to clear previous elements if nothing is drawn?
 
 ## TODO
 
