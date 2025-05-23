@@ -6,7 +6,7 @@
   Description:           Python overlay test/example script
   Author:                Michael De Pasquale
   Creation Date:         2025-05-14
-  Modification Date:     2025-05-20
+  Modification Date:     2025-05-23
 
 """
 
@@ -39,13 +39,7 @@ def main(*args) -> None:
     # Set target window, if provided
     if len(args) > 1:
         assert len(args) == 2
-        targetWin = args[1]
-
-        if targetWin.startswith("0x"):
-            targetWin = int(targetWin[2:], base=16)
-
-        else:
-            targetWin = int(targetWin)
+        targetWin = int(args[1], base=0)
 
         targetWidth, targetHeight = overlay.setTargetWindow(targetWin)
         print(f"Set target: Window {targetWin}, {targetWidth}x{targetHeight}")
